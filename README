@@ -15,6 +15,22 @@ To see the current list of commands use run the command with no parameters:
 
 ./fosctrl.sh
 
+Foscam Camera control
+-----------------
+
+Commands:
+              left : go left one second
+             right : go right one second
+                up : go up one second
+              down : go down one second
+            center : center the camera
+     flipandmirror : set flip and mirror settings
+   noflipandmirror : disable flip or mirror settings
+          snapshot : take a snapshot. Returns the name of the file.
+
+Example:
+fosctrl.sh center
+
 ----------
 References & Requirements:
 
