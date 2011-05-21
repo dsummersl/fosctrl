@@ -4,15 +4,15 @@
 # variables:
 
 user="user"
-password="user"
-host="host.com"
+password="password"
+host="host"
 
 ################################################################################
 
 set -e
 #set -x
 
-curl="curl -s -u$user:$password http://$host/"
+curl="curl -s --max-time 60 -u$user:$password http://$host/"
 
 # commands:
 move="${curl}decoder_control.cgi?command="
@@ -36,27 +36,44 @@ move="${curl}decoder_control.cgi?command="
 #-----
 
 flipandmirror="${curl}camera_control.cgi?param=5&value=3"
+noflipandmirror="${curl}camera_control.cgi?param=5&value=0"
+video="${curl}videostream.cgi"
+snapshot="${curl}snapshot.cgi"
 
-if [[ -z "$1" ]]
-then
-  # center:
-  echo "Camera IP control"
+help() {
+  echo "Foscam Camera control"
   echo "-----------------"
   echo ""
   echo "Commands:"
-  echo "  left : go left one second"
-  echo " right : go right one second"
-  echo "    up : go up one second"
-  echo "  down : go down one second"
-  echo "center : center the camera"
-  exit 0
+  echo "              left : go left one second"
+  echo "             right : go right one second"
+  echo "                up : go up one second"
+  echo "              down : go down one second"
+  echo "            center : center the camera"
+  echo "     flipandmirror : set flip and mirror settings"
+  echo "   noflipandmirror : disable flip or mirror settings"
+  echo "          snapshot : take a snapshot. Returns the name of the file."
+#  echo "             video : take a video. This redirects to 'video.mpg'. It exits after"
+#	echo "                     60 seconds, or type Control-C to exit."
+	echo ""
+	echo "Example:"
+	echo "fosctrl.sh center"
+	exit 0
+}
+
+if [[ -z "$1" ]]
+then
+	help
 else
   command=$1
 fi
 
-if [[ "$1" == "flip" ]]
+if [[ "$1" == "flipandmirror" ]]
 then
   test `$flipandmirror` == 'ok.'
+elif [[ "$1" == "noflipandmirror" ]]
+then
+  test `$noflipandmirror` == 'ok.'
 elif [[ "$1" == "up" ]]
 then
   test `${move}0` == 'ok.'
@@ -77,7 +94,33 @@ then
   test `${move}4` == 'ok.'
   sleep 1
   test `${move}5` == 'ok.'
+elif [[ "$1" == "snapshot" ]]
+then
+	snapname=`date +%m%d%y-%H%M.jpg`
+  `$snapshot > $snapname`
+	echo $snapname
+#elif [[ "$1" == "video" ]]
+#then
+# The header from the actual file returned by videostream is:
+# I think JFIF is the beginning of something that is JPEG, but I'm not
+# sure how/where I can make this viewable..
+
+#0000000: 2d2d 6970 6361 6d65 7261 0d0a 436f 6e74  --ipcamera..Cont
+#0000010: 656e 742d 5479 7065 3a20 696d 6167 652f  ent-Type: image/
+#0000020: 6a70 6567 0d0a 436f 6e74 656e 742d 4c65  jpeg..Content-Le
+#0000030: 6e67 7468 3a20 3335 3632 380d 0a0d 0aff  ngth: 35628.....
+#0000040: d8ff e000 134a 4649 4600 0102 0200 0000  .....JFIF.......
+
+# Oh...save it as mpg and cut off the first 4 lines does the trick:
+#...no...
+# TODO This doesn' twork. The header appears in front of every single image.
+# probably the best thing to do is just break the image up into separate JPG images.
+# Supposedly VLC and QuickTime works, but thats not particularly universal...
+
+# see http://en.wikipedia.org/wiki/Motion_JPEG (M-JPEG over HTTP)
+
+  #`$video | tail +5 > video.mpg`
+#  `$video > video.mpg`
 else
-  center="${move}${command}"
-  test `$center` == 'ok.'
+	help
 fi
