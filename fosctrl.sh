@@ -4,7 +4,7 @@
 # variables:
 
 user="user"
-password="password"
+password="user"
 host="host"
 
 ################################################################################
@@ -71,6 +71,9 @@ fi
 if [[ "$1" == "flipandmirror" ]]
 then
   test `$flipandmirror` == 'ok.'
+elif [[ "$1" == "center" ]]
+then
+  test `${move}25` == 'ok.'
 elif [[ "$1" == "noflipandmirror" ]]
 then
   test `$noflipandmirror` == 'ok.'
