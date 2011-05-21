@@ -4,8 +4,11 @@
 # variables:
 
 user="user"
-password="user"
+password="password"
 host="host"
+
+# number of seconds to go 'up','down', etc.
+timeout=2
 
 ################################################################################
 
@@ -45,10 +48,10 @@ help() {
   echo "-----------------"
   echo ""
   echo "Commands:"
-  echo "              left : go left one second"
-  echo "             right : go right one second"
-  echo "                up : go up one second"
-  echo "              down : go down one second"
+  echo "              left : go left for ${timeout}s"
+  echo "             right : go right for ${timeout}s"
+  echo "                up : go up for ${timeout}s"
+  echo "              down : go down for ${timeout}s"
   echo "            center : center the camera"
   echo "     flipandmirror : set flip and mirror settings"
   echo "   noflipandmirror : disable flip or mirror settings"
@@ -80,22 +83,22 @@ then
 elif [[ "$1" == "up" ]]
 then
   test `${move}0` == 'ok.'
-  sleep 1
+  sleep ${timeout}
   test `${move}1` == 'ok.'
 elif [[ "$1" == "down" ]]
 then
   test `${move}2` == 'ok.'
-  sleep 1
+  sleep ${timeout}
   test `${move}3` == 'ok.'
 elif [[ "$1" == "right" ]]
 then
   test `${move}6` == 'ok.'
-  sleep 1
+  sleep ${timeout}
   test `${move}7` == 'ok.'
 elif [[ "$1" == "left" ]]
 then
   test `${move}4` == 'ok.'
-  sleep 1
+  sleep ${timeout}
   test `${move}5` == 'ok.'
 elif [[ "$1" == "snapshot" ]]
 then
