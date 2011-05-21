@@ -1,0 +1,22 @@
+----------
+fosctrl.sh 
+----------
+
+fosctrl.sh is a shell script that commands the Foscam family of internet
+enabled cameras. Its a wrapper around the IPCAM CGI SDK 2.1, issuing
+HTTP commands directly to the camera.
+
+To use:
+
+Edit the script, change the user/password/host settings to reflect  your own
+camera's particular configuration.
+
+To see the current list of commands use run the command with no parameters:
+
+./fosctrl.sh
+
+----------
+References & Requirements:
+
+requires 'curl'.
+See the main documentation: http://www.foscam.es/descarga/ipcam_cgi_sdk.pdf
