@@ -5,10 +5,10 @@
 
 user="user"
 password="password"
-host="host"
+host="host.com"
 
 # number of seconds to go 'up','down', etc.
-timeout=2
+timeout=1
 
 ################################################################################
 
@@ -42,25 +42,32 @@ flipandmirror="${curl}camera_control.cgi?param=5&value=3"
 noflipandmirror="${curl}camera_control.cgi?param=5&value=0"
 video="${curl}videostream.cgi"
 snapshot="${curl}snapshot.cgi"
+reboot="${curl}reboot.cgi"
 
 help() {
   echo "Foscam Camera control"
   echo "-----------------"
   echo ""
   echo "Commands:"
-  echo "              left : go left for ${timeout}s"
-  echo "             right : go right for ${timeout}s"
-  echo "                up : go up for ${timeout}s"
-  echo "              down : go down for ${timeout}s"
+  echo "              left : go left for ${timeout}s (or supply a specific # of seconds)"
+  echo "             right : go right for ${timeout}s (or supply a specific # of seconds)"
+  echo "                up : go up for ${timeout}s (or supply a specific # of seconds)"
+  echo "              down : go down for ${timeout}s (or supply a specific # of seconds)"
   echo "            center : center the camera"
   echo "     flipandmirror : set flip and mirror settings"
   echo "   noflipandmirror : disable flip or mirror settings"
   echo "          snapshot : take a snapshot. Returns the name of the file."
+  echo "            reboot : Reboot the camera."
 #  echo "             video : take a video. This redirects to 'video.mpg'. It exits after"
 #	echo "                     60 seconds, or type Control-C to exit."
 	echo ""
 	echo "Example:"
+  echo "# center the camera:"
 	echo "fosctrl.sh center"
+  echo "# go left for ${timeout}s"
+	echo "fosctrl.sh left"
+  echo "# go right for 5s"
+	echo "fosctrl.sh right 5"
 	exit 0
 }
 
@@ -73,33 +80,56 @@ fi
 
 if [[ "$1" == "flipandmirror" ]]
 then
-  test `$flipandmirror` == 'ok.'
+  result=`$flipandmirror`
 elif [[ "$1" == "center" ]]
 then
-  test `${move}25` == 'ok.'
+  result=`${move}25`
 elif [[ "$1" == "noflipandmirror" ]]
 then
-  test `$noflipandmirror` == 'ok.'
+  result=`$noflipandmirror`
+elif [[ "$1" == "reboot" ]]
+then
+  result=`$reboot`
 elif [[ "$1" == "up" ]]
 then
-  test `${move}0` == 'ok.'
-  sleep ${timeout}
-  test `${move}1` == 'ok.'
+  result=`${move}0`
+  if [[ -z "$2" ]]
+  then
+    sleep ${timeout}
+  else
+    sleep $2
+  fi
+  result=`${move}1`
 elif [[ "$1" == "down" ]]
 then
-  test `${move}2` == 'ok.'
-  sleep ${timeout}
-  test `${move}3` == 'ok.'
+  result=`${move}2`
+  if [[ -z "$2" ]]
+  then
+    sleep ${timeout}
+  else
+    sleep $2
+  fi
+  result=`${move}3`
 elif [[ "$1" == "right" ]]
 then
-  test `${move}6` == 'ok.'
-  sleep ${timeout}
-  test `${move}7` == 'ok.'
+  result=`${move}6`
+  if [[ -z "$2" ]]
+  then
+    sleep ${timeout}
+  else
+    sleep $2
+  fi
+  result=`${move}7`
 elif [[ "$1" == "left" ]]
 then
-  test `${move}4` == 'ok.'
-  sleep ${timeout}
-  test `${move}5` == 'ok.'
+  result=`${move}4`
+  if [[ -z "$2" ]]
+  then
+    sleep ${timeout}
+  else
+    sleep $2
+  fi
+  result=`${move}5`
 elif [[ "$1" == "snapshot" ]]
 then
 	snapname=`date +%m%d%y-%H%M.jpg`

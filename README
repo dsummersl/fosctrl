@@ -9,27 +9,32 @@ HTTP commands directly to the camera.
 To use:
 
 Edit the script, change the user/password/host settings to reflect  your own
-camera's particular configuration.
+camera's particular configuration. MAKE SURE THE USER IS AN ADMINISTRATOR: or some
+commands won't work (ie, reboot). You can also change the default timeout from 1s
+to 2s, or what have you.
 
 To see the current list of commands use run the command with no parameters:
 
 ./fosctrl.sh
 
-Foscam Camera control
------------------
-
 Commands:
-              left : go left one second
-             right : go right one second
-                up : go up one second
-              down : go down one second
+              left : go left for 1s (or supply a specific # of seconds)
+             right : go right for 1s (or supply a specific # of seconds)
+                up : go up for 1s (or supply a specific # of seconds)
+              down : go down for 1s (or supply a specific # of seconds)
             center : center the camera
      flipandmirror : set flip and mirror settings
    noflipandmirror : disable flip or mirror settings
           snapshot : take a snapshot. Returns the name of the file.
+            reboot : Reboot the camera.
 
 Example:
+# center the camera:
 fosctrl.sh center
+# go left for 1s
+fosctrl.sh left
+# go right for 5s
+fosctrl.sh right 5
 
 ----------
 References & Requirements:
